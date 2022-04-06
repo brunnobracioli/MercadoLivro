@@ -3,6 +3,7 @@ package com.mercadolivro.controller
 import com.mercadolivro.model.CustomerModel
 import com.mercadolivro.request.PostCustomerRequest
 import com.mercadolivro.request.PutCustomerRequest
+import com.mercadolivro.service.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,44 +17,34 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("customer")
-class CustomerController {
+class CustomerController(val customerService : CustomerService) {
 
-    val customers = mutableListOf<CustomerModel>()
-
-    @GetMapping
-    fun allCustomer(): MutableList<CustomerModel> {
-        return customers
+    @GetMapping //query params
+    fun allCustomer(@RequestBody name: String?): List<CustomerModel> {
+        return customerService.allCustomer(name)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // serve para mudar o status para 201 confirmando a criação do objeto
     fun createCustomer(@RequestBody customer: PostCustomerRequest){
-        val id = if(customers.isEmpty()){
-            1
-        }else{
-            customers.last().id.toInt() + 1
-        }.toString()
-        customers.add(CustomerModel(id, customer.name, customer.email))
+        customerService.createCustomer(customer)
     }
 
     @GetMapping("/{id}")
     fun findCustomer(@PathVariable id: String): CustomerModel{
-        return customers.filter { it.id == id }.first()
+        return customerService.findCustomer(id)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun updateCustomer(@PathVariable id: String, @RequestBody customer: PutCustomerRequest){
-        customers.filter{it.id == id}.first().let {
-            it.name = customer.name
-            it.email = customer.email
-        }
+        customerService.updateCustomer(id, customer)
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCustomer(@PathVariable id: String){
-        customers.removeIf{it.id == id}
+        customerService.deleteCustomer(id)
     }
 
 }
