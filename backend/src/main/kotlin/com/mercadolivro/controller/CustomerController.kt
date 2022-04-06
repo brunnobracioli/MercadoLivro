@@ -4,6 +4,7 @@ import com.mercadolivro.model.CustomerModel
 import com.mercadolivro.request.PostCustomerRequest
 import com.mercadolivro.request.PutCustomerRequest
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,10 +42,18 @@ class CustomerController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun updateCustomer(@PathVariable id: String, @RequestBody customer: PutCustomerRequest){
         customers.filter{it.id == id}.first().let {
             it.name = customer.name
             it.email = customer.email
         }
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteCustomer(@PathVariable id: String){
+        customers.removeIf{it.id == id}
+    }
+
 }
