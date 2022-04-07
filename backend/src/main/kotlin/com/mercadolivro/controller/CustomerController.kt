@@ -1,5 +1,6 @@
 package com.mercadolivro.controller
 
+import com.mercadolivro.extension.toCustomerModel
 import com.mercadolivro.model.CustomerModel
 import com.mercadolivro.request.PostCustomerRequest
 import com.mercadolivro.request.PutCustomerRequest
@@ -27,7 +28,7 @@ class CustomerController(val customerService : CustomerService) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // serve para mudar o status para 201 confirmando a criação do objeto
     fun createCustomer(@RequestBody customer: PostCustomerRequest){
-        customerService.createCustomer(customer)
+        customerService.createCustomer(customer.toCustomerModel())
     }
 
     @GetMapping("/{id}")
@@ -38,7 +39,7 @@ class CustomerController(val customerService : CustomerService) {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun updateCustomer(@PathVariable id: String, @RequestBody customer: PutCustomerRequest){
-        customerService.updateCustomer(id, customer)
+        customerService.updateCustomer(customer.toCustomerModel(id))
     }
 
     @DeleteMapping("/{id}")

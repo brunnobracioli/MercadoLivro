@@ -1,7 +1,6 @@
 package com.mercadolivro.service
 
 import com.mercadolivro.model.CustomerModel
-import com.mercadolivro.request.PostCustomerRequest
 import com.mercadolivro.request.PutCustomerRequest
 import org.springframework.stereotype.Service
 
@@ -18,21 +17,22 @@ class CustomerService {
         return customers
     }
 
-    fun createCustomer(customer: PostCustomerRequest){
+    fun createCustomer(customer: CustomerModel){
         val id = if(customers.isEmpty()){
             1
         }else{
-            customers.last().id.toInt() + 1
+            customers.last().id!!.toInt() + 1
         }.toString()
-        customers.add(CustomerModel(id, customer.name, customer.email))
+        customer.id = id
+        customers.add(customer)
     }
 
     fun findCustomer(id: String): CustomerModel{
         return customers.filter { it.id == id }.first()
     }
 
-    fun updateCustomer(id: String, customer: PutCustomerRequest){
-        customers.filter{it.id == id}.first().let {
+    fun updateCustomer(customer: CustomerModel ){
+        customers.filter{it.id == customer.id}.first().let {
             it.name = customer.name
             it.email = customer.email
         }
