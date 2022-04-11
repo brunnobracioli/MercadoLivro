@@ -22,12 +22,12 @@ class CustomerService {
             1
         }else{
             customers.last().id!!.toInt() + 1
-        }.toString()
+        }
         customer.id = id
         customers.add(customer)
     }
 
-    fun findCustomer(id: String): CustomerModel{
+    fun findCustomer(id: Int): CustomerModel{
         return customers.filter { it.id == id }.first()
     }
 
@@ -38,7 +38,7 @@ class CustomerService {
         }
     }
 
-    fun deleteCustomer(id: String){
+    fun deleteCustomer(id: Int){
         customers.removeIf{it.id == id}
     }
 
